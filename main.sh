@@ -40,9 +40,9 @@ export KBUILD_BUILD_HOST=GitHubCI
 
 # Highlight
 msg() {
-	echo
-	echo -e "\e[1;33m$*\e[0m"
-	echo
+ echo
+ echo -e "\e[1;33m$*\e[0m"
+ echo
 }
 
 cd $WORKDIR
@@ -72,16 +72,7 @@ msg "Kernel Version: $KERNEL_VERSION"
 
 cd $KERNEL_DIR
 
-msg "KernelSU"
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
-            echo "CONFIG_KPROBES=y" >> $DEVICE_DEFCONFIG_FILE
-            echo "CONFIG_HAVE_KPROBES=y" >> $DEVICE_DEFCONFIG_FILE
-            echo "CONFIG_KPROBE_EVENTS=y" >> $DEVICE_DEFCONFIG_FILE
-KSU_GIT_VERSION=$(cd KernelSU && git rev-list --count HEAD)
-KERNELSU_VERSION=$(($KSU_GIT_VERSION + 10200))
-msg "KernelSU Version: $KERNELSU_VERSION"
-
-sed -i "/CONFIG_LOCALVERSION=/c\CONFIG_LOCALVERSION=\"-$KERNELSU_VERSION-$KERNEL_NAME\"/" $DEVICE_DEFCONFIG_FILE
+sed -i "/CONFIG_LOCALVERSION=/c\CONFIG_LOCALVERSION=\"-$KERNEL_NAME\"/" $DEVICE_DEFCONFIG_FILE
 
 #Build
 msg "Build"
@@ -135,28 +126,27 @@ cd $WORKDIR/out
 msg "Release Files"
 echo "
 ## $KERNEL_NAME
-- **Time**: $TIME # CET
+- Time: $TIME # CET
 
 <br>
 
-- **Codename**: $DEVICE_CODE
-- **Android Version**: $ANDROID_VERSION
+- Codename: $DEVICE_CODE
+- Android Version: $ANDROID_VERSION
 
 <br>
 
-- **Kernel Version**: $KERNEL_VERSION
-- **KernelSU Version**: $KERNELSU_VERSION
+- Kernel Version: $KERNEL_VERSION
 
 <br>
 
-- **CLANG Version**: $CLANG_VERSION
-- **LLD Version**: $LLD_VERSION
+- CLANG Version: $CLANG_VERSION
+- LLD Version: $LLD_VERSION
 
 <br>
 
-- **Kernel Source**: $KERNEL_SOURCE
+- Kernel Source: $KERNEL_SOURCE
 " > bodyFile.md
-echo "$KERNEL_NAME-$KERNEL_VERSION-$KERNELSU_VERSION" > name.txt
+echo "$KERNEL_NAME-$KERNEL_VERSION" > name.txt
 echo "$KERNEL_NAME.zip" > filename.txt
 
 # Finish
